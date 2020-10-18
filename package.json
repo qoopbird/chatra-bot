@@ -1,0 +1,15 @@
+{
+  "name": "chatra_bot",
+  "version": "1.0.0",
+  "description": "bot for the group discord server",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node ./src/bot.js",
+    "test": "node ./src/bot.js"
+  },
+  "author": "Sera",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  }
+}
