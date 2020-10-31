@@ -1,6 +1,12 @@
 var COMMANDS = {}
 let SaveHandler = require('./save-handler.js')
 
+let responder = null;
+
+exports.RegisterResponder = function(newResponder) {
+		responder = newResponder;
+}
+
 exports.RegisterCommand = function(command, callback) {
 	if (COMMANDS.hasOwnProperty(command)) { throw `${command} already exists!`; }
 
@@ -13,7 +19,11 @@ exports.RegisterCommand = function(command, callback) {
 exports.HandleMessage = function(message) {
 	if (message.content.match(/^[\!\~]/)) {
 		for(const cmd in COMMANDS){
-			if(message.content.substring(1, cmd.length + 1).toLowerCase() == cmd.toLowerCase()){
+			if (message.content.substring(1, cmd.length + 1).toLowerCase() == cmd.toLowerCase()
+					// either the whole message is just the command
+					// or the command is followed by a space
+					&& (message.content.length == cmd.length + 1 || message.content[cmd.length + 1] == " ")) {
+
 				let cmdObject = COMMANDS[cmd]
 				let args = []
 
@@ -177,6 +187,17 @@ exports.RegisterCommand("rpronouns", (msg, farg, args) => {
 
 	}
 })
+
+exports.RegisterCommand("bully", (msg, farg, args) => {
+	if (msg.author.id != 439795333950734337 && msg.author.id != 80010348391825408) return;
+	if (farg.toLowerCase().match(/\bstop\b/)) {
+			responder.stopBullying();
+	}
+
+	let victim = findUser(msg.guild, farg);
+	if (!victim) return;
+	responder.bully(victim);
+});
 
 exports.RegisterCommand("save", (msg, farg, args) => {
 	if(msg.author.id != 80010348391825408) return;
